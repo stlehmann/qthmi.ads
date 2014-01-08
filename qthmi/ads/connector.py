@@ -18,7 +18,6 @@ class ADSConnector(AbstractPLCConnector):
     @type ams_addr: AmsAddr
     @ivar ams_addr: ams address of device
 
-
     """
 
     def __init__(self):

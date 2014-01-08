@@ -82,10 +82,17 @@ ADSTRANS_CLIENT1REQ = 2
 ADSTRANS_SERVERCYCLE = 3
 ADSTRANS_SERVERONCHA = 4
 
+
+class ADSError(Exception):
+    pass
+
+
 class SAdsVersion(Structure):
     _fields_=[("version", c_byte),
              ("revision", c_byte),
-             ("build", c_short)]    
+             ("build", c_short)]
+
+
 class AdsVersion ():
     '''
     @summary: contains version number, revision number, build number of the ADS-DLL
@@ -108,12 +115,15 @@ class AdsVersion ():
         self.revision = stAdsVersion.revision
         self.build = stAdsVersion.build
 
+
 class SAmsAddr(Structure):
     '''
     @summary: structure containing the netId and port of an ADS device
     '''
     _fields_ = [("netId", c_ubyte * 6),
                 ("port", c_ushort)]
+
+
 class AmsAddr():
     '''
     @summary: wrapper for SAmsAddr-structure, needed to adress an ADS device
@@ -170,6 +180,7 @@ class AmsAddr():
         
         for i in range(len(a)):
             self.stAmsAddr.netId[i] = c_ubyte(int(a[i])) 
+
 
 class SAdsNotificationAttrib(Structure):
     _fields_ = [("cbLength", c_ulong),
