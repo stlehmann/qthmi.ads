@@ -1,83 +1,78 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Created on 19.09.2013
-@author: lehmann
-'''
+
+"""
+
+__author__ = "lehmann"
 
 from ctypes import *
 from constants import *
 
-#ADS-DLL laden
 _adsDLL = CDLL("AdsDll.dll") #: ADS-DLL (Beckhoff TwinCAT)
 
 
 def adsGetDllVersion():
-    '''
-    @summary: returns version, revision and build of the ads-dll
+    """
+    Return version, revision and build of the ADS library.   
     
-    @rtype: AdsVersion
-    @return: version, revision and build of the ads-dll
-    '''
-    #Aufruf der API-Funktion, Rückgabetyp ist Long
-    resLong = c_long(_adsDLL.AdsGetDllVersion())
+    :rtype: AdsVersion
 
-    #Struktur-Objekt erstellen
+    """
+    resLong = c_long(_adsDLL.AdsGetDllVersion())
     stVersion = SAdsVersion()
-    #Speicherbereich des Long-Wertes in die Struktur kopieren
     fit = min(sizeof(stVersion), sizeof(resLong))
     memmove(addressof(stVersion), addressof(resLong), fit)
-
     return AdsVersion(stVersion.version, stVersion.revision, stVersion.build)
 
 def adsPortOpen():
     """
-    @summary:  connects to the TwinCAT message router
-    @rtype: int
-    @return: port number
+    Connect to the TwinCAT message router.
+    
+    :rtype: int
+    :return: port number
+    
     """
     adsPortOpenFct = _adsDLL.AdsPortOpen
     adsPortOpenFct.restype = c_long
-
     portNr = adsPortOpenFct()
     return portNr
 
 def adsPortClose():
     """
-    @summary: closes the connection to the TwinCAT message router
-    @rtype: int
-    @return: error state
+    Close the connection to the TwinCAT message router.
+    
+    :rtype: int
+    :return: error state
+    
     """
     adsPortCloseFct = _adsDLL.AdsPortClose
     adsPortCloseFct.restype = c_long
-
     errCode = adsPortCloseFct()
     return errCode
 
 def adsGetLocalAddress():
     """
-    @summary: returns the local AMS-address and the port number
-    @rtype: AmsAddr 
-    @return: AMS-address
+    Return the local AMS-address and the port number.
+    :rtype: AmsAddr 
+    :return: AMS-address
+    
     """
     adsGetLocalAddressFct = _adsDLL.AdsGetLocalAddress
     stAmsAddr = SAmsAddr()
-
-    errCode = adsGetLocalAddressFct(pointer(stAmsAddr))
-    
+    errCode = adsGetLocalAddressFct(pointer(stAmsAddr))   
     if errCode: 
-        return None
-    
-    adsLocalAddr = AmsAddr(errCode, stAmsAddr)
-   
+        return None    
+    adsLocalAddr = AmsAddr(errCode, stAmsAddr)   
     return adsLocalAddr
 
 def adsSyncReadStateReq(adr):
     """
-    @summary: reads the current ADS-state and the machine-state from the ADS-server
-    @type adr: AmsAddr
-    @param adr: local or remote AmsAddr
-    @rtype: (int, int, int)
-    @return: errCode, adsState, deviceState
+    Read the current ADS-state and the machine-state from the ADS-server.
+    :param AmsAddr adr: local or remote AmsAddr
+    :rtype: (int, int, int)
+    :return: errCode, adsState, deviceState
+    
     """
     adsSyncReadStateReqFct = _adsDLL.AdsSyncReadStateReq
 
@@ -92,11 +87,11 @@ def adsSyncReadStateReq(adr):
 
 def adsSyncReadDeviceInfoReq(adr):
     """
-    @summary: reads the name and the version-number of the ADS-server
-    @type adr: AmsAddr
-    @param adr: local or remote AmsAddr
-    @rtype: int, string, AdsVersion
-    @return: errCode, device name, version
+    Read the name and the version-number of the ADS-server.
+    :param AmsAddr adr: local or remote AmsAddr
+    :rtype: int, string, AdsVersion
+    :return: errCode, device name, version
+
     """
     adsSyncReadDeviceInfoReqFct = _adsDLL.AdsSyncReadDeviceInfoReq
     
@@ -111,30 +106,24 @@ def adsSyncReadDeviceInfoReq(adr):
 
 def adsSyncWriteControlReq(adr, adsState, deviceState, data, plcDataType):
     """
-    @summary: changes the ads-state and the machine-state of the ADS-server
+    Change the ads-state and the machine-state of the ADS-server.
     
-    @type adr: AmsAddr
-    @param adr: local or remote AmsAddr
+    :param AmsAddr adr: local or remote AmsAddr   
+    :param int adsState: new ADS-state, according to ADSTATE constants    
+    :param int deviceState: new machine-state    
+    :param data: additional data
+    :param int plcDataType: PLC-datatype, according to PLCTYPE constants    
+    :rtype: int
+    :return: error-state of the function
     
-    @type adsState: int
-    @param adsState: new ADS-state, according to ADSTATE constants
+    Note: 
     
-    @type deviceState: int 
-    @param deviceState: new machine-state
-    
-    @param data: additional data
-    
-    @type plcDataType: int
-    @param plcDataType: PLC-datatype, according to PLCTYPE constants
-    
-    @rtype: int
-    @return: error-state of the function
-    
-    @note: Despite changing the ADS-state and the machine-state it is possible to send additional
-    data to the ADS-server. For current ADS-devices additional data is not progressed. 
-    Every ADS-device is able to communicate its current state to other devices. There is a difference
-    between the device-state and the state of the ADS-interface (AdsState). The possible states of an
-    ADS-interface are defined in the ADS-specification.
+        Despite changing the ADS-state and the machine-state it is possible to send additional
+        data to the ADS-server. For current ADS-devices additional data is not progressed. 
+        Every ADS-device is able to communicate its current state to other devices. There is a difference
+        between the device-state and the state of the ADS-interface (AdsState). The possible states of an
+        ADS-interface are defined in the ADS-specification.
+        
     """
     adsSyncWriteControlReqFct = _adsDLL.AdsSyncWriteControlReq
     
@@ -156,24 +145,16 @@ def adsSyncWriteControlReq(adr, adsState, deviceState, data, plcDataType):
     
 def adsSyncWriteReq(adr, indexGroup, indexOffset, value, plcDataType):
     """
-    @summary: sends data synchronous to an ADS-device
+    Send data synchronously to an ADS-device.
     
-    @type adr: AmsAddr
-    @param adr: local or remote AmsAddr
+    :param AmsAddr adr: local or remote AmsAddr
+    :param int indexGroup: PLC storage area, according to the INDEXGROUP constants
+    :param int indexOffset: PLC storage address    
+    :param value: value to write to the storage address of the PLC
+    :param plcDataType: type of the data given to the PLC, according to PLCTYPE constants   
+    :rtype: int
+    :return: error-state of the function
     
-    @type indexGroup: int
-    @param indexGroup: PLC storage area, according to the INDEXGROUP constants
-    
-    @type indexOffset: int
-    @param indexOffset: PLC storage address
-    
-    @param value: value to write to the storage address of the PLC
-    
-    @type plcDataType: int
-    @param plcDataType: type of the data given to the PLC, according to PLCTYPE constants
-    
-    @rtype: int
-    @return: error-state of the function
     """
 
     adsSyncWriteReqFct = _adsDLL.AdsSyncWriteReq
@@ -197,22 +178,15 @@ def adsSyncWriteReq(adr, indexGroup, indexOffset, value, plcDataType):
 
 def adsSyncReadReq(adr, indexGroup, indexOffset, plcDataType):
     """
-    @summary: reads data synchronous from an ADS-device
+    Reads data synchronously from an ADS-device.
         
-    @type adr: AmsAddr
-    @param adr: local or remote AmsAddr
+    :param AmsAddr adr: local or remote AmsAddr
+    :param int indexGroup: PLC storage area, according to the INDEXGROUP constants
+    :param int indexOffset: PLC storage address   
+    :param int plcDataType: type of the data given to the PLC, according to PLCTYPE constants    
+    :rtype: (int, PLCTYPE)
+    :return: (errCode, value): ``errCode`` error-state of the function, ``value``
     
-    @type indexGroup: int
-    @param indexGroup: PLC storage area, according to the INDEXGROUP constants
-    
-    @type indexOffset: int
-    @param indexOffset: PLC storage address   
-    
-    @type plcDataType: int
-    @param plcDataType: type of the data given to the PLC, according to PLCTYPE constants
-    
-    @rtype: (int, PLCTYPE)
-    @return: (errCode, value): B{errCode} error-state of the function, B{value}  
     """
     
     adsSyncReadReqFct = _adsDLL.AdsSyncReadReq
@@ -228,7 +202,7 @@ def adsSyncReadReq(adr, indexGroup, indexOffset, plcDataType):
         
     return (errCode, data.value)
 
-'''
+"""
 def adsSyncAddDeviceNotificationReq(adr, indexGroup, indexOffset, noteAttrib, noteFunc, user, notification):
     adsSyncAddDeviceNotificationReq = _adsDLL.AdsSyncAddDeviceNotificationReq
     
@@ -236,5 +210,5 @@ def adsSyncAddDeviceNotificationReq(adr, indexGroup, indexOffset, noteAttrib, no
     nIndexGroup = c_ulong(indexGroup)
     nIndexOffset = c_ulong(indexOffset)
     #pNoteAttrib =
-''' 
+""" 
         
