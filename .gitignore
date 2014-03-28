@@ -1,6 +1,10 @@
 *.pyc
 *.egg-info/
+*.pyo
 .idea
 html/
 build/
 dist/
+
+Makefile
+make.bat
