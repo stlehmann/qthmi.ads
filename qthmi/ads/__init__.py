@@ -1,5 +1,3 @@
-#-*- coding: utf-8 -*-
-
 """
 :requires: ctypes, Beckhoff TwinCAT mit ADS-DLL
 :version: 1
@@ -36,6 +34,3 @@ Samples:
     close port
         >>> adsPortClose()
 """
-
-
-from pyads import *

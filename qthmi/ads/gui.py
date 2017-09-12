@@ -1,13 +1,12 @@
-#-*-coding: utf-8-*-
 """
 Created on 19.09.2013
 
 """
-
-__author__ = 'lehmann'
-
 from constants import INDEXGROUP_MEMORYBIT, PLCTYPE_BOOL, INDEXGROUP_MEMORYBYTE
 from pyads import adsSyncWriteReq, adsSyncReadReq
+
+
+__author__ = 'lehmann'
 
 
 class ADSMapper():

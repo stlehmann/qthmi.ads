@@ -1,9 +1,8 @@
-__author__ = 'Stefan Lehmann'
-
 from qthmi.main.connector import AbstractPLCConnector, ConnectionError
-from pyads import adsPortOpen, adsGetLocalAddress, adsSyncReadReq, \
-    adsSyncWriteReq
-from constants import *
+import pyads
+
+
+__author__ = 'Stefan Lehmann'
 
 
 class ADSConnector(AbstractPLCConnector):
@@ -18,15 +17,11 @@ class ADSConnector(AbstractPLCConnector):
 
     """
 
-    def __init__(self):
+    def __init__(self, ams_addr=None, port=None):
         super(ADSConnector, self).__init__()
-        self.port = adsPortOpen()
-        self.ams_addr = adsGetLocalAddress()
-
-        if self.ams_addr.errCode:
-            raise ADSError(self.adsAdr.errCode())
-
-        self.ams_addr.setPort(PORT_SPS1)
+        self.port = pyads.open_port()
+        self.ams_addr = ams_addr or pyads.get_local_address()
+        self.ams_addr.port = port or pyads.PORT_SPS1
 
     def read_from_plc(self, address, datatype):
         """
@@ -39,11 +34,12 @@ class ADSConnector(AbstractPLCConnector):
         module.
 
         """
-        index_group = INDEXGROUP_MEMORYBIT if datatype == PLCTYPE_BOOL else \
-            INDEXGROUP_MEMORYBYTE
+        index_group = (pyads.INDEXGROUP_MEMORYBIT
+                       if datatype == pyads.PLCTYPE_BOOL
+                       else pyads.INDEXGROUP_MEMORYBYTE)
 
-        (errcode, value) = adsSyncReadReq(
-            self.ams_addr, index_group, address, datatype)
+        (errcode, value) = pyads.read(self.ams_addr, index_group,
+                                      address, datatype)
 
         if errcode:
             raise ConnectionError(
@@ -64,11 +60,13 @@ class ADSConnector(AbstractPLCConnector):
         module.
 
         """
-        index_group = INDEXGROUP_MEMORYBIT if datatype == PLCTYPE_BOOL else \
-            INDEXGROUP_MEMORYBYTE
-        errcode = adsSyncWriteReq(
-            self.ams_addr, index_group, address, value, datatype
-        )
+        index_group = (pyads.INDEXGROUP_MEMORYBIT
+                       if datatype == pyads.PLCTYPE_BOOL
+                       else pyads.INDEXGROUP_MEMORYBYTE)
+
+        errcode = pyads.write(self.ams_addr, index_group, address,
+                              value, datatype)
+
         if errcode:
             raise ConnectionError(
                 "Writing on address %i (ErrorCode %i)" %
