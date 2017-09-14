@@ -1,5 +1,6 @@
 from qthmi.main.connector import AbstractPLCConnector, ConnectionError
 import pyads
+from pyads.pyads import ADSError
 
 
 __author__ = 'Stefan Lehmann'
@@ -38,13 +39,12 @@ class ADSConnector(AbstractPLCConnector):
                        if datatype == pyads.PLCTYPE_BOOL
                        else pyads.INDEXGROUP_MEMORYBYTE)
 
-        (errcode, value) = pyads.read(self.ams_addr, index_group,
-                                      address, datatype)
-
-        if errcode:
+        try:
+            value = pyads.read(self.ams_addr, index_group, address, datatype)
+        except ADSError as e:
             raise ConnectionError(
                 "Reading from address %i (ErrorCode %i)" %
-                (address, errcode)
+                (address, e.err_code)
             )
         return value
 
@@ -64,11 +64,11 @@ class ADSConnector(AbstractPLCConnector):
                        if datatype == pyads.PLCTYPE_BOOL
                        else pyads.INDEXGROUP_MEMORYBYTE)
 
-        errcode = pyads.write(self.ams_addr, index_group, address,
-                              value, datatype)
-
-        if errcode:
+        try:
+            pyads.write(self.ams_addr, index_group, address,
+                        value, datatype)
+        except ADSError as e:
             raise ConnectionError(
                 "Writing on address %i (ErrorCode %i)" %
-                (address, errcode)
+                (address, e.err_code)
             )
