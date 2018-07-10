@@ -8,3 +8,4 @@ dist/
 
 Makefile
 make.bat
+.mypy_cache/

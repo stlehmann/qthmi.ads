@@ -1,4 +1,15 @@
+"""Connector for ADS devices.
+
+:author: Stefan Lehmann <stlm@posteo.de>
+:license: MIT, see license file or https://opensource.org/licenses/MIT
+
+:created on 2018-06-11 18:16:49
+:last modified by:   Stefan Lehmann
+:last modified time: 2018-07-10 14:26:56
+
+"""
 from qthmi.main.connector import AbstractPLCConnector, ConnectionError
+from .gui import VALUE_TYPE
 import pyads
 from pyads.pyads import ADSError
 
@@ -18,15 +29,14 @@ class ADSConnector(AbstractPLCConnector):
 
     """
 
-    def __init__(self, ams_addr=None, port=None):
+    def __init__(self, ams_addr: pyads.AmsAddr=None, port: int=None) -> None:
         super(ADSConnector, self).__init__()
         self.port = pyads.open_port()
         self.ams_addr = ams_addr or pyads.get_local_address()
         self.ams_addr.port = port or pyads.PORT_SPS1
 
-    def read_from_plc(self, address, datatype):
-        """
-        Read value from the plc.
+    def read_from_plc(self, address: int, datatype: int) -> VALUE_TYPE:
+        """Read value from the plc.
 
         :param int address: memory address
         :param datatype: ``c`` datatype, a PLCTYPE constant
@@ -48,9 +58,8 @@ class ADSConnector(AbstractPLCConnector):
             )
         return value
 
-    def write_to_plc(self, address, value, datatype):
-        """
-        Write value to the plc.
+    def write_to_plc(self, address: int, value: VALUE_TYPE, datatype: int) -> None:
+        """Write value to the plc.
 
         :param int address: memory address
         :param value: value to be written
