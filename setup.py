@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-version = '0.2.0'
+version = '0.2.1'
 
 
 setup(
@@ -25,9 +25,9 @@ setup(
     install_requires=[
         'setuptools',
         'matplotlib',
-        'qthmi.main',
+        'qthmi.main==0.2.1',
     ],
     dependency_links=[
-        "git+https://github.com/stlehmann/qthmi.main.git#egg=qthmi.main",
+        "git+https://github.com/stlehmann/qthmi.main.git#egg=qthmi.main-0.2.1",
     ]
 )
