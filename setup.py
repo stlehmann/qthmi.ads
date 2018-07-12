@@ -27,4 +27,7 @@ setup(
         'matplotlib',
         'qthmi.main',
     ],
+    dependency_links=[
+        "git+https://github.com/stlehmann/qthmi.main.git",
+    ]
 )
