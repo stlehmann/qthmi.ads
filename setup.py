@@ -28,6 +28,6 @@ setup(
         'qthmi.main',
     ],
     dependency_links=[
-        "git+https://github.com/stlehmann/qthmi.main.git",
+        "git+https://github.com/stlehmann/qthmi.main.git#egg=qthmi.main",
     ]
 )
