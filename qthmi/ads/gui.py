@@ -4,14 +4,13 @@
 :license: MIT, see license file or https://opensource.org/licenses/MIT
 
 :created on 2018-06-11 18:16:49
-:last modified by:   Stefan Lehmann
-:last modified time: 2018-07-10 14:18:10
+:last modified by: Stefan Lehmann
+:last modified time: 2018-07-17 13:46:27
 
 """
 from typing import Union, List, Optional, Any
 from constants import INDEXGROUP_MEMORYBIT, PLCTYPE_BOOL, INDEXGROUP_MEMORYBYTE
-from pyads import AmsAddr
-from pyads import adsSyncWriteReq, adsSyncReadReq
+from pyads import AmsAddr, adsSyncWriteReq, adsSyncReadReq
 from qthmi.main.widgets import HMIObject
 
 

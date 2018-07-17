@@ -4,17 +4,13 @@
 :license: MIT, see license file or https://opensource.org/licenses/MIT
 
 :created on 2018-06-11 18:16:49
-:last modified by:   Stefan Lehmann
-:last modified time: 2018-07-10 14:26:56
+:last modified by: Stefan Lehmann
+:last modified time: 2018-07-17 13:46:10
 
 """
 from qthmi.main.connector import AbstractPLCConnector, ConnectionError
 from .gui import VALUE_TYPE
 import pyads
-from pyads.pyads import ADSError
-
-
-__author__ = 'Stefan Lehmann'
 
 
 class ADSConnector(AbstractPLCConnector):
@@ -51,7 +47,7 @@ class ADSConnector(AbstractPLCConnector):
 
         try:
             value = pyads.read(self.ams_addr, index_group, address, datatype)
-        except ADSError as e:
+        except pyads.ADSError as e:
             raise ConnectionError(
                 "Reading from address %i (ErrorCode %i)" %
                 (address, e.err_code)
@@ -76,7 +72,7 @@ class ADSConnector(AbstractPLCConnector):
         try:
             pyads.write(self.ams_addr, index_group, address,
                         value, datatype)
-        except ADSError as e:
+        except pyads.ADSError as e:
             raise ConnectionError(
                 "Writing on address %i (ErrorCode %i)" %
                 (address, e.err_code)
