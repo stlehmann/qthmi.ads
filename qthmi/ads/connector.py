@@ -5,7 +5,7 @@
 
 :created on 2018-06-11 18:16:49
 :last modified by: Stefan Lehmann
-:last modified time: 2018-07-17 13:46:10
+:last modified time: 2018-07-17 15:27:19
 
 """
 from qthmi.main.connector import AbstractPLCConnector, ConnectionError
@@ -14,8 +14,7 @@ import pyads
 
 
 class ADSConnector(AbstractPLCConnector):
-    """
-    Basic Connector class for connecting to the ADS device.
+    """Basic Connector class for connecting to the ADS device.
 
     :ivar int port: port number to the ADS device
     :ivar ams_addr: ip adress of the ADS device

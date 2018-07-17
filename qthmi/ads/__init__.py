@@ -1,4 +1,5 @@
-"""
+"""QtHMI binding for Beckhoff TwinCAT.
+
 :requires: ctypes, Beckhoff TwinCAT mit ADS-DLL
 :version: 1
 :note: Wrapper for the Beckhoff TwinCAT AdsDLL.dll

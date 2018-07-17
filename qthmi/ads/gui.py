@@ -5,18 +5,11 @@
 
 :created on 2018-06-11 18:16:49
 :last modified by: Stefan Lehmann
-:last modified time: 2018-07-17 14:17:09
+:last modified time: 2018-07-17 15:27:03
 
 """
 from typing import Union, List, Optional, Any
-from pyads import (
-    AmsAddr,
-    adsSyncWriteReq,
-    adsSyncReadReq,
-    INDEXGROUP_MEMORYBIT,
-    PLCTYPE_BOOL,
-    INDEXGROUP_MEMORYBYTE,
-)
+import pyads
 from qthmi.main.widgets import HMIObject
 
 
@@ -90,11 +83,11 @@ class ADSMapper:
         """
         self.currentValue = value
         indexgroup = (
-            INDEXGROUP_MEMORYBIT
-            if self.plcDataType == PLCTYPE_BOOL
-            else INDEXGROUP_MEMORYBYTE
+            pyads.INDEXGROUP_MEMORYBIT
+            if self.plcDataType == pyads.PLCTYPE_BOOL
+            else pyads.INDEXGROUP_MEMORYBYTE
         )
-        err = adsSyncWriteReq(
+        err = pyads.write(
             adsAdr, indexgroup, self.plcAdr, self.currentValue, self.plcDataType
         )
         if err == 0:
@@ -103,7 +96,7 @@ class ADSMapper:
             "error writing on address %i. error number %i" % (self.plcAdr, err)
         )
 
-    def read(self, adsAdr: AmsAddr) -> Any:
+    def read(self, adsAdr: pyads.AmsAddr) -> Any:
         """Read from plc address and write in self.currentValue.
 
         Call mapAdsToGui to show the value on the connected gui objects.
@@ -114,11 +107,11 @@ class ADSMapper:
 
         """
         indexgroup = (
-            INDEXGROUP_MEMORYBIT
-            if self.plcDataType == PLCTYPE_BOOL
-            else INDEXGROUP_MEMORYBYTE
+            pyads.INDEXGROUP_MEMORYBIT
+            if self.plcDataType == pyads.PLCTYPE_BOOL
+            else pyads.INDEXGROUP_MEMORYBYTE
         )
-        (err, value) = adsSyncReadReq(adsAdr, indexgroup, self.plcAdr, self.plcDataType)
+        (err, value) = pyads.read(adsAdr, indexgroup, self.plcAdr, self.plcDataType)
 
         if err:
             raise Exception(
