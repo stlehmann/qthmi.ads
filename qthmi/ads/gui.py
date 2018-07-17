@@ -5,12 +5,18 @@
 
 :created on 2018-06-11 18:16:49
 :last modified by: Stefan Lehmann
-:last modified time: 2018-07-17 13:46:27
+:last modified time: 2018-07-17 14:17:09
 
 """
 from typing import Union, List, Optional, Any
-from constants import INDEXGROUP_MEMORYBIT, PLCTYPE_BOOL, INDEXGROUP_MEMORYBYTE
-from pyads import AmsAddr, adsSyncWriteReq, adsSyncReadReq
+from pyads import (
+    AmsAddr,
+    adsSyncWriteReq,
+    adsSyncReadReq,
+    INDEXGROUP_MEMORYBIT,
+    PLCTYPE_BOOL,
+    INDEXGROUP_MEMORYBYTE,
+)
 from qthmi.main.widgets import HMIObject
 
 
@@ -116,8 +122,7 @@ class ADSMapper:
 
         if err:
             raise Exception(
-                "error reading from address %i. error number %i"
-                % (self.plcAdr, err)
+                "error reading from address %i. error number %i" % (self.plcAdr, err)
             )
         if isinstance(self.guiObjects, (list, tuple)):
             for o in self.guiObjects:
